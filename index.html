@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pista Visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#05070f">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+
+  <!-- HOME -->
+  <section id="home" class="screen active">
+    <div class="logo">🎭</div>
+    <h1>Pista Visual</h1>
+    <p class="tag">Faça mímica, seu time adivinha!</p>
+    <div class="stack">
+      <button id="btnOnline" class="btn big">🌐 Modo Online</button>
+      <button id="btnLocal" class="btn big alt">📱 Modo Local</button>
+    </div>
+    <details class="rules">
+      <summary>Como jogar</summary>
+      <ul>
+        <li>Os jogadores são divididos em times (duplas, trios, quartetos...).</li>
+        <li>Na sua vez, um jogador do time vira o <b>mímico</b> e vê a palavra secreta.</li>
+        <li>Ele só pode fazer gestos: <b>sem falar, sem sons e sem apontar objetos</b>.</li>
+        <li>Os colegas de time têm que adivinhar antes do tempo acabar. Cada acerto vale 1 ponto.</li>
+        <li>Cada mímico pode pular até 3 palavras por vez.</li>
+        <li>Vence o time com mais pontos no fim das rodadas.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ONLINE: MENU -->
+  <section id="omenu" class="screen">
+    <button class="ghost sm back" data-go="home">← Voltar</button>
+    <h2>🌐 Modo Online</h2>
+    <div class="card">
+      <label>Seu apelido</label>
+      <input id="oName" maxlength="14" placeholder="Ex.: Ana" autocomplete="off">
+      <button id="btnCreate" class="btn">➕ Criar sala</button>
+      <div class="or">ou entre em uma sala</div>
+      <input id="oCode" maxlength="5" placeholder="CÓDIGO DA SALA" autocomplete="off" class="code-in">
+      <button id="btnJoin" class="btn alt">🚪 Entrar na sala</button>
+      <p id="oErr" class="err"></p>
+      <p class="hintnet">📡 Funciona entre aparelhos diferentes: PC, celular e tablet jogam juntos na mesma sala.</p>
+    </div>
+  </section>
+
+  <!-- ONLINE: LOBBY -->
+  <section id="lobby" class="screen">
+    <div class="topbar"><b>Sala de espera</b><button id="lbLeave" class="ghost sm">Sair</button></div>
+    <div class="card center">
+      <small>Código da sala</small>
+      <div id="lCode" class="bigcode">-----</div>
+      <button id="btnCopy" class="ghost sm">📋 Copiar código</button>
+      <p id="lInfo" class="muted"></p>
+    </div>
+
+    <div class="card">
+      <h3>Jogadores</h3>
+      <ul id="lPlayers" class="plist"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Configurações <small id="lWho" class="muted"></small></h3>
+      <div class="grid3">
+        <div><label>Tamanho dos times</label><select id="cTeam"></select></div>
+        <div><label>Rodadas</label><select id="cRounds"></select></div>
+        <div><label>Tempo (s)</label><select id="cTime"></select></div>
+      </div>
+      <label>Categorias</label>
+      <div id="cCats" class="chips"></div>
+    </div>
+
+    <div class="card">
+      <div class="rowb"><h3>Times</h3><button id="btnShuffle" class="ghost sm">🔀 Embaralhar</button></div>
+      <div id="lTeams" class="teams"></div>
+    </div>
+
+    <button id="btnStart" class="btn big">▶ Iniciar jogo</button>
+    <p id="lWait" class="muted center">Aguardando o anfitrião iniciar...</p>
+  </section>
+
+  <!-- ONLINE: JOGO -->
+  <section id="game" class="screen">
+    <div class="topbar">
+      <span id="gRound"></span>
+      <span id="gTimer" class="timer">⏱</span>
+      <button id="gLeave" class="ghost sm">Sair</button>
+    </div>
+    <div id="gScores" class="scores"></div>
+
+    <div class="stage">
+      <div id="pReady" class="panel" hidden>
+        <h2 id="rTitle"></h2>
+        <p id="rSub" class="muted"></p>
+        <div id="rLast" class="last"></div>
+        <button id="btnGo" class="btn big">▶ Começar minha vez</button>
+      </div>
+
+      <div id="pPerf" class="panel" hidden>
+        <p class="hint">Faça mímica! Sem falar, sem sons e sem apontar objetos.</p>
+        <div id="wordBox" class="wordbox"></div>
+        <div class="row">
+          <button id="btnOk" class="btn good">✔ Acertaram</button>
+          <button id="btnSkip" class="btn warn">⏭ Pular (<span id="skipN">3</span>)</button>
+        </div>
+      </div>
+
+      <div id="pGuess" class="panel" hidden>
+        <h2>🤔 Adivinhe!</h2>
+        <p id="gSub" class="muted"></p>
+        <form id="gForm" autocomplete="off">
+          <input id="gInput" placeholder="Digite seu palpite..." maxlength="40">
+          <button class="btn">Enviar</button>
+        </form>
+      </div>
+
+      <div id="pWatch" class="panel" hidden>
+        <h2 id="wTitle"></h2>
+        <p id="wSub" class="muted"></p>
+      </div>
+
+      <div class="card feedbox">
+        <h3>Palpites</h3>
+        <ul id="gFeed" class="feed"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONLINE: FIM -->
+  <section id="end" class="screen">
+    <h2 class="center">🏆 Fim de jogo!</h2>
+    <div id="eRank" class="rank"></div>
+    <button id="btnAgain" class="btn big">🔁 Jogar de novo</button>
+    <p id="eWait" class="muted center">Aguardando o anfitrião...</p>
+    <button id="eLeave" class="ghost">Sair da sala</button>
+  </section>
+
+  <!-- LOCAL: CONFIG -->
+  <section id="lsetup" class="screen">
+    <button class="ghost sm back" data-go="home">← Voltar</button>
+    <h2>📱 Modo Local</h2>
+    <p class="muted">Todos jogam no mesmo aparelho, passando o celular.</p>
+    <div class="card">
+      <div class="grid3">
+        <div><label>Nº de times</label><select id="lN"></select></div>
+        <div><label>Rodadas</label><select id="lR"></select></div>
+        <div><label>Tempo (s)</label><select id="lT"></select></div>
+      </div>
+      <label>Nomes dos times</label>
+      <div id="lNames" class="names"></div>
+      <label>Categorias</label>
+      <div id="lCats" class="chips"></div>
+    </div>
+    <button id="btnLStart" class="btn big">▶ Começar</button>
+  </section>
+
+  <!-- LOCAL: PASSAR -->
+  <section id="lpass" class="screen center-v">
+    <div class="small-score" id="lpScores"></div>
+    <div class="card center">
+      <small id="lpRound"></small>
+      <h2 id="lpTeam"></h2>
+      <p>Escolham quem será o <b>mímico</b> e passem o aparelho para essa pessoa.<br>Só o mímico pode olhar a tela!</p>
+      <button id="btnLReady" class="btn big">👁 Ver palavra e começar</button>
+    </div>
+  </section>
+
+  <!-- LOCAL: JOGANDO -->
+  <section id="lplay" class="screen">
+    <div class="topbar"><span id="lyTeam"></span><span id="lyTimer" class="timer">0</span><span id="lyGot" class="pill">0 ✔</span></div>
+    <div class="panel">
+      <p class="hint">Faça mímica! Sem falar, sem sons e sem apontar objetos.</p>
+      <div id="lyWord" class="wordbox"></div>
+      <div class="row">
+        <button id="btnLOk" class="btn good">✔ Acertou</button>
+        <button id="btnLSkip" class="btn warn">⏭ Pular (<span id="lySkip">3</span>)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOCAL: RESULTADO DA VEZ -->
+  <section id="lres" class="screen">
+    <div class="card center">
+      <h2 id="lrTitle"></h2>
+      <div id="lrWords" class="last"></div>
+    </div>
+    <div id="lrScores" class="rank"></div>
+    <button id="btnLNext" class="btn big">Próximo ▶</button>
+  </section>
+
+  <!-- LOCAL: FIM -->
+  <section id="lend" class="screen">
+    <h2 class="center">🏆 Fim de jogo!</h2>
+    <div id="leRank" class="rank"></div>
+    <button id="btnLAgain" class="btn big">🔁 Jogar de novo</button>
+    <button id="btnLHome" class="ghost">Menu inicial</button>
+  </section>
+
+</main>
+<div id="toast" class="toast"></div>
+<div id="busy" class="busy" hidden><div class="spin"></div><p id="busyTxt">Aguarde...</p></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
